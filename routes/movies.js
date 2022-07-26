@@ -13,6 +13,7 @@ moviesRouter.post('/', celebrate({
     image: Joi.string().required().custom(validateURL),
     trailerLink: Joi.string().required().custom(validateURL),
     thumbnail: Joi.string().required().custom(validateURL),
+    movieId: Joi.string().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),
