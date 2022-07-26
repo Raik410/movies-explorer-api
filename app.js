@@ -28,7 +28,7 @@ app.use(cors);
 
 app.use(requestLogger);
 
-router(app, auth);
+router(app);
 
 app.use(errorLogger);
 

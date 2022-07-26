@@ -3,8 +3,9 @@ const { celebrate, Joi } = require('celebrate');
 const userRouter = require('./users');
 const moviesRouter = require('./movies');
 const { createUser, login } = require('../controllers/user');
+const auth = require('../middlewares/auth');
 
-module.exports = (app, auth) => {
+module.exports = (app) => {
   app.post('/singup', celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
