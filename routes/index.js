@@ -1,26 +1,17 @@
-const { celebrate, Joi } = require('celebrate');
-
+const NotFound = require('../utils/errors/NotFound');
 const userRouter = require('./users');
 const moviesRouter = require('./movies');
 const { createUser, login } = require('../controllers/user');
 const auth = require('../middlewares/auth');
+const { createUserValidation, loginValidation } = require('../utils/joiValidation/joiValidation');
 
 module.exports = (app) => {
-  app.post('/singup', celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-      name: Joi.string().required(),
-    }),
-  }), createUser);
+  app.post('/signup', createUserValidation, createUser);
 
-  app.post('/singin', celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }), login);
+  app.post('/signin', loginValidation, login);
 
   app.use('/users', auth, userRouter);
   app.use('/movies', auth, moviesRouter);
+
+  app.use(auth, (req, res, next) => next(new NotFound('Страница не найдена')));
 };

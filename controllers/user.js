@@ -72,5 +72,13 @@ module.exports.updateProfile = (req, res, next) => {
         res.send(user);
       }
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new BusyOwner('Email занят!'));
+      } else {
+        next(err);
+      }
+    });
 };

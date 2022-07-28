@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validateURL = require('../utils/validateURL/validateURL');
 
 const movieSchema = mongoose.Schema(
   {
@@ -26,17 +25,14 @@ const movieSchema = mongoose.Schema(
     image: {
       required: true,
       type: String,
-      validate: validateURL,
     },
     trailerLink: {
       required: true,
       type: String,
-      validate: validateURL,
     },
     thumbnail: {
       required: true,
       type: String,
-      validate: validateURL,
     },
     owner: {
       required: true,

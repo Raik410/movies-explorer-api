@@ -5,21 +5,18 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 
-const NotFound = require('./utils/errors/NotFound');
-
+const { MONGO_URL } = process.env;
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const auth = require('./middlewares/auth');
 const limiter = require('./middlewares/rateLimit');
 const cors = require('./middlewares/cors');
 const router = require('./routes/index');
+const { handleError } = require('./utils/handleError/handleError');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
 app.use(helmet());
-
-app.use(limiter);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,28 +25,17 @@ app.use(cors);
 
 app.use(requestLogger);
 
+app.use(limiter);
+
 router(app);
 
 app.use(errorLogger);
 
-app.use(auth, (req, res, next) => next(new NotFound('Страница не найдена')));
-
 app.use(errors());
 
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
+app.use(handleError);
 
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-});
-
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(`${MONGO_URL}`, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 })

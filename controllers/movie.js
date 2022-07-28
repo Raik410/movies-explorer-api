@@ -74,7 +74,7 @@ module.exports.deleteMovie = (req, res, next) => {
         } else {
           Movie.findByIdAndRemove(movieId)
             .then(() => {
-              res.send({ message: 'Карточка удалена' });
+              res.send({ message: 'Фильм удалён' });
             });
         }
       }
@@ -85,5 +85,28 @@ module.exports.deleteMovie = (req, res, next) => {
       } else {
         next(err);
       }
+    });
+};
+
+module.exports.deleteMovie = (req, res, next) => {
+  const { movieId } = req.params;
+
+  Movie.findById(movieId)
+    .orFail(new NotFound('Фильм не найден'))
+    .then((movie) => {
+      const owner = movie.owner.toString();
+      if (owner === req.user._id) {
+        return Movie.findByIdAndRemove(movieId)
+          .then(() => {
+            res.send({ message: 'Фильм удалён' });
+          });
+      }
+      throw new RightsError('Это не ваш фильм');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest('Переданы некорректные данные'));
+      }
+      next(err);
     });
 };
