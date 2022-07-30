@@ -20,6 +20,7 @@ module.exports.createUser = (req, res, next) => {
       const userData = {
         email: user.email,
         name: user.name,
+        _id: user._id,
       };
       res.send(userData);
     })

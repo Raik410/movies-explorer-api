@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { isEmail } = require('validator');
+const validator = require('validator');
 const bcrypt = require('bcrypt');
 const AuthorizationError = require('../utils/errors/AuthorizationError');
 
@@ -10,7 +10,10 @@ const userSchema = mongoose.Schema(
       type: String,
       unique: true,
       index: true,
-      validate: [isEmail, { message: 'Некорректный email' }],
+      validate: {
+        validator: (v) => validator.isEmail(v),
+        message: 'Неверный email',
+      },
     },
     password: {
       required: true,

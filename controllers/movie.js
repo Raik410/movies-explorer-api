@@ -64,34 +64,6 @@ module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
 
   Movie.findById(movieId)
-    .then((movie) => {
-      if (!movie) {
-        next(new NotFound('Фильм не найден'));
-      } else {
-        const owner = movie.owner.toString();
-        if (owner !== req.user._id) {
-          next(new RightsError('Это не ваш фильм!'));
-        } else {
-          Movie.findByIdAndRemove(movieId)
-            .then(() => {
-              res.send({ message: 'Фильм удалён' });
-            });
-        }
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequest('Переданы некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-
-  Movie.findById(movieId)
     .orFail(new NotFound('Фильм не найден'))
     .then((movie) => {
       const owner = movie.owner.toString();
@@ -99,7 +71,8 @@ module.exports.deleteMovie = (req, res, next) => {
         return Movie.findByIdAndRemove(movieId)
           .then(() => {
             res.send({ message: 'Фильм удалён' });
-          });
+          })
+          .catch(next);
       }
       throw new RightsError('Это не ваш фильм');
     })
