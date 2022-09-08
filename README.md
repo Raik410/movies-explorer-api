@@ -1,8 +1,16 @@
 # movies-explorer-api
 
-Ссылка на API: https://api.movies.me.nomoredomains.xyz/
+Задняя (back-end) часть дипломной работы.
 
-IP: raiki
+## Функциональность 
+
+На данном сайте вы можете посмотреть моё портфолио, а также найти небольшое количество фильмов.
+
+Из стека тут используется: 
+- JS
+- NodeJS
+- express
+- mongoDB
 
 
-login: 158.160.4.132
+## [Сам проект можно посмотреть тут](https://movies.me.nomoredomains.sbs/movies)
